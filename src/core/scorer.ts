@@ -1,10 +1,12 @@
 import type { Dimension, DimensionResult, Issue, MetricValue, RuleDefinition } from '../types/index.js';
 
-const DEFAULT_WEIGHTS: Record<Dimension, number> = {
-  创新: 0.3,
-  规范: 0.3,
-  简洁: 0.3,
-  注释: 0.1,
+export const DEFAULT_WEIGHTS: Record<Dimension, number> = {
+  创新: 0.2,
+  架构: 0.2,
+  安全: 0.2,
+  规范: 0.2,
+  简洁: 0.15,
+  注释: 0.05,
 };
 
 export function scoreDimensions(
@@ -14,7 +16,7 @@ export function scoreDimensions(
   userWeights: Partial<Record<Dimension, number>> = {},
 ): DimensionResult[] {
   const weights = { ...DEFAULT_WEIGHTS, ...userWeights };
-  const dimensions: Dimension[] = ['创新', '规范', '简洁', '注释'];
+  const dimensions: Dimension[] = ['创新', '架构', '安全', '规范', '简洁', '注释'];
 
   return dimensions.map((dimension) => {
     const dimensionRules = rules.filter((r) => r.dimension === dimension);

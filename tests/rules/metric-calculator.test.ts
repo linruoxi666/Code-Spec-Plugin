@@ -34,4 +34,22 @@ describe('calculateMetrics', () => {
     expect(result.issues.length).toBe(1);
     expect(result.issues[0].file).toBe('b.ts');
   });
+
+  it('detects long functions', () => {
+    const functionRule: RuleDefinition = {
+      id: 'function-length',
+      dimension: '简洁',
+      weight: 0.1,
+      severity: 'warning',
+      check: { type: 'metric', message: '函数过长', threshold: 5 },
+    };
+    const longFunction = 'function longFunc() {\n' + 'console.log(1);\n'.repeat(10) + '}';
+    const functionFiles: SourceFile[] = [
+      { relativePath: 'short.ts', absolutePath: '/short.ts', content: 'function a() { return 1; }' },
+      { relativePath: 'long.ts', absolutePath: '/long.ts', content: longFunction },
+    ];
+    const result = calculateMetrics(functionFiles, functionRule);
+    expect(result.issues.length).toBe(1);
+    expect(result.issues[0].file).toBe('long.ts');
+  });
 });

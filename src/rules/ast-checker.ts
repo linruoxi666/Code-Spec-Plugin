@@ -53,6 +53,32 @@ export function checkAst(files: SourceFile[], rule: RuleDefinition): Issue[] {
         }
       }
     }
+
+    if (rule.id === 'no-hardcoded-secrets') {
+      const secretPatterns = [
+        /['"]sk-[a-zA-Z0-9_-]{10,}['"]/,
+        /['"][a-zA-Z0-9_-]*password[a-zA-Z0-9_-]*['"]\s*[:=]\s*['"][^'"]+['"]/i,
+        /['"][a-zA-Z0-9_-]*api[_-]?key[a-zA-Z0-9_-]*['"]\s*[:=]\s*['"][^'"]+['"]/i,
+        /['"][a-zA-Z0-9_-]*token[a-zA-Z0-9_-]*['"]\s*[:=]\s*['"][^'"]+['"]/i,
+      ];
+      const lines = file.content.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        for (const pattern of secretPatterns) {
+          if (pattern.test(line) && !line.includes('.example') && !line.includes('.env')) {
+            issues.push({
+              file: file.relativePath,
+              line: i + 1,
+              column: 1,
+              rule: rule.id,
+              severity: rule.severity,
+              message: `${rule.check.message}: ${line.trim().slice(0, 80)}`,
+            });
+            break;
+          }
+        }
+      }
+    }
   }
   return issues;
 }

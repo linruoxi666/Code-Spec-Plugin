@@ -35,7 +35,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           type: 'object',
           properties: {
             path: { type: 'string', description: 'Absolute or relative project path' },
-            enableLlmJudge: { type: 'boolean', description: 'Enable LLM Judge for innovation dimension' },
+            enableLlmJudge: { type: 'boolean', description: 'Enable LLM Judge for innovation, architecture and security dimensions (requires API key)' },
           },
           required: ['path'],
         },

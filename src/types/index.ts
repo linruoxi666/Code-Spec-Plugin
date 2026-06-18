@@ -1,4 +1,4 @@
-export type Dimension = '创新' | '规范' | '简洁' | '注释';
+export type Dimension = '创新' | '架构' | '安全' | '规范' | '简洁' | '注释';
 
 export type Severity = 'error' | 'warning' | 'info';
 

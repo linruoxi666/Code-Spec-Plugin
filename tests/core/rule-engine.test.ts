@@ -15,6 +15,6 @@ describe('evaluateProject', () => {
     expect(namingIssues.length).toBeGreaterThan(0);
     expect(report.totalScore).toBeGreaterThan(0);
     expect(report.totalScore).toBeLessThan(10);
-    expect(report.dimensions.length).toBe(4);
+    expect(report.dimensions.length).toBe(6);
   });
 });

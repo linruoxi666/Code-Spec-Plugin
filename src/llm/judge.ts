@@ -1,6 +1,13 @@
 import type OpenAI from 'openai';
-import { InnovationScore, InnovationScoreSchema } from './schema.js';
-import { buildInnovationPrompt } from './prompts.js';
+import {
+  InnovationScoreSchema,
+  ArchitectureScoreSchema,
+  SecurityScoreSchema,
+  type InnovationScore,
+  type ArchitectureScore,
+  type SecurityScore,
+} from './schema.js';
+import { buildInnovationPrompt, buildArchitecturePrompt, buildSecurityPrompt } from './prompts.js';
 import type { SourceFile } from '../types/index.js';
 
 export interface ProjectSummary {
@@ -33,17 +40,23 @@ function inferTechnologies(files: SourceFile[]): string[] {
   if (files.some((f) => f.relativePath.endsWith('.ts') || f.relativePath.endsWith('.tsx'))) techs.push('TypeScript');
   if (files.some((f) => f.relativePath.endsWith('.tsx'))) techs.push('React');
   if (files.some((f) => f.relativePath.includes('package.json'))) techs.push('Node.js');
+  if (files.some((f) => f.relativePath.endsWith('.go'))) techs.push('Go');
+  if (files.some((f) => f.relativePath.endsWith('.py'))) techs.push('Python');
+  if (files.some((f) => f.relativePath.endsWith('.rs'))) techs.push('Rust');
   return techs;
 }
 
-export async function judgeInnovation(
+function extractJson(text: string): string {
+  const match = text.match(/\{[\s\S]*\}/);
+  return match ? match[0] : '{}';
+}
+
+async function callLlm<T>(
   client: OpenAI,
   model: string,
-  files: SourceFile[],
-): Promise<InnovationScore> {
-  const summary = summarizeProject(files);
-  const prompt = buildInnovationPrompt(JSON.stringify(summary, null, 2));
-
+  prompt: string,
+  schema: { parse: (data: unknown) => T },
+): Promise<T> {
   const response = await client.chat.completions.create({
     model,
     messages: [
@@ -56,10 +69,35 @@ export async function judgeInnovation(
   const content = response.choices[0]?.message?.content ?? '{}';
   const jsonText = extractJson(content);
   const parsed = JSON.parse(jsonText);
-  return InnovationScoreSchema.parse(parsed);
+  return schema.parse(parsed);
 }
 
-function extractJson(text: string): string {
-  const match = text.match(/\{[\s\S]*\}/);
-  return match ? match[0] : '{}';
+export async function judgeInnovation(
+  client: OpenAI,
+  model: string,
+  files: SourceFile[],
+): Promise<InnovationScore> {
+  const summary = summarizeProject(files);
+  const prompt = buildInnovationPrompt(JSON.stringify(summary, null, 2));
+  return callLlm(client, model, prompt, InnovationScoreSchema);
+}
+
+export async function judgeArchitecture(
+  client: OpenAI,
+  model: string,
+  files: SourceFile[],
+): Promise<ArchitectureScore> {
+  const summary = summarizeProject(files);
+  const prompt = buildArchitecturePrompt(JSON.stringify(summary, null, 2));
+  return callLlm(client, model, prompt, ArchitectureScoreSchema);
+}
+
+export async function judgeSecurity(
+  client: OpenAI,
+  model: string,
+  files: SourceFile[],
+): Promise<SecurityScore> {
+  const summary = summarizeProject(files);
+  const prompt = buildSecurityPrompt(JSON.stringify(summary, null, 2));
+  return callLlm(client, model, prompt, SecurityScoreSchema);
 }

@@ -1,6 +1,7 @@
 import prompts from 'prompts';
 import { resolve } from 'node:path';
 import { saveProjectConfig } from '../config/manager.js';
+import { hasLlmApiKey, promptForApiKey } from '../llm/config-helper.js';
 import type { CodeSpecConfig } from '../config/types.js';
 
 const availableTechStacks = [
@@ -26,7 +27,7 @@ export async function initCommand(projectPath: string): Promise<void> {
     {
       type: 'confirm',
       name: 'useLlmJudge',
-      message: '是否启用 LLM Judge 对创新维度评分？（需要 API Key）',
+      message: '是否启用 LLM Judge 对创新、架构、安全维度评分？（需要 API Key）',
       initial: false,
     },
     {
@@ -53,6 +54,14 @@ export async function initCommand(projectPath: string): Promise<void> {
   });
 
   const rulePacks = buildRulePacks(response.techStack as string[]);
+
+  if (response.useLlmJudge) {
+    const global = await import('../config/manager.js').then((m) => m.loadGlobalConfig());
+    if (!hasLlmApiKey(global.llm)) {
+      console.log('\n启用 LLM Judge 需要配置 API Key。');
+      await promptForApiKey();
+    }
+  }
 
   const config: CodeSpecConfig = {
     techStack: response.techStack as string[],
@@ -83,7 +92,7 @@ export async function initCommand(projectPath: string): Promise<void> {
   console.log('\n下一步：');
   console.log(`  csi evaluate ${projectPath}`);
   if (response.useLlmJudge) {
-    console.log('  启用 LLM Judge 前，请确保已配置 API Key（.env 或全局配置）');
+    console.log('  LLM Judge 已启用，API Key 已保存到全局配置');
   }
 }
 

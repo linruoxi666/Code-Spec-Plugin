@@ -1,17 +1,20 @@
 import type OpenAI from 'openai';
-import { judgeInnovation } from './judge.js';
-import type { InnovationScore } from './schema.js';
+import { judgeInnovation, judgeArchitecture, judgeSecurity } from './judge.js';
+import type { InnovationScore, ArchitectureScore, SecurityScore } from './schema.js';
 import type { SourceFile } from '../types/index.js';
 
-export async function judgeInnovationWithConsensus(
-  client: OpenAI,
-  model: string,
-  files: SourceFile[],
-  runs: number = 3,
-): Promise<InnovationScore> {
-  const results: InnovationScore[] = [];
+interface ScoredResult {
+  score: number;
+  reason: string;
+}
+
+async function runWithConsensus<T extends ScoredResult>(
+  runner: () => Promise<T>,
+  runs: number,
+): Promise<T> {
+  const results: T[] = [];
   for (let i = 0; i < runs; i++) {
-    results.push(await judgeInnovation(client, model, files));
+    results.push(await runner());
   }
 
   const scores = results.map((r) => r.score).sort((a, b) => a - b);
@@ -26,9 +29,36 @@ export async function judgeInnovationWithConsensus(
   if (max - min > 1.0) {
     return {
       ...closest,
-      reason: `${closest.reason}（注：3 次评分差异较大 [${min}, ${max}]，建议人工复核）`,
+      reason: `${closest.reason}（注：${runs} 次评分差异较大 [${min}, ${max}]，建议人工复核）`,
     };
   }
 
   return closest;
+}
+
+export async function judgeInnovationWithConsensus(
+  client: OpenAI,
+  model: string,
+  files: SourceFile[],
+  runs: number = 3,
+): Promise<InnovationScore> {
+  return runWithConsensus(() => judgeInnovation(client, model, files), runs);
+}
+
+export async function judgeArchitectureWithConsensus(
+  client: OpenAI,
+  model: string,
+  files: SourceFile[],
+  runs: number = 3,
+): Promise<ArchitectureScore> {
+  return runWithConsensus(() => judgeArchitecture(client, model, files), runs);
+}
+
+export async function judgeSecurityWithConsensus(
+  client: OpenAI,
+  model: string,
+  files: SourceFile[],
+  runs: number = 3,
+): Promise<SecurityScore> {
+  return runWithConsensus(() => judgeSecurity(client, model, files), runs);
 }

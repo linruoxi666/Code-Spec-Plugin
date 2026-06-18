@@ -33,4 +33,24 @@ describe('checkAst', () => {
     expect(issues[0].file).toBe('bad.ts');
     expect(issues[0].message).toContain('BAD_FUNCTION');
   });
+
+  it('detects hardcoded secrets', () => {
+    const secretRule: RuleDefinition = {
+      id: 'no-hardcoded-secrets',
+      dimension: '安全',
+      weight: 0.3,
+      severity: 'error',
+      check: { type: 'ast-query', message: '发现疑似硬编码敏感信息' },
+    };
+    const secretFiles: SourceFile[] = [
+      {
+        relativePath: 'config.ts',
+        absolutePath: '/config.ts',
+        content: 'const apiKey = "sk-abc123xyz789secret";\nconst valid = "ok";',
+      },
+    ];
+    const issues = checkAst(secretFiles, secretRule);
+    expect(issues.length).toBeGreaterThan(0);
+    expect(issues[0].rule).toBe('no-hardcoded-secrets');
+  });
 });

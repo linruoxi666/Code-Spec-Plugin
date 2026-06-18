@@ -1,8 +1,22 @@
+export type LlmProvider =
+  | 'openai'
+  | 'anthropic'
+  | 'deepseek'
+  | 'moonshot'
+  | 'siliconflow'
+  | 'zhipu'
+  | 'volcano'
+  | 'aliyun'
+  | 'baidu'
+  | 'tencent'
+  | 'custom';
+
 export interface LlmConfig {
-  provider?: 'openai' | 'anthropic' | 'deepseek' | 'volcano';
+  provider?: LlmProvider;
   model?: string;
   baseURL?: string;
   apiKey?: string;
+  verifySsl?: boolean;
 }
 
 export interface CodeSpecConfig {

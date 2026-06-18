@@ -5,6 +5,8 @@ import { generateGuidelines } from './guidelines/injector.js';
 import { initCommand } from './commands/init.js';
 import { showConfigCommand, setConfigCommand } from './commands/config.js';
 import { resolveConfig, mergeConfig, resolveRulePackPaths, getDefaultRulePackPaths } from './config/manager.js';
+import { hasLlmApiKey, promptForApiKey, formatMissingApiKeyMessage } from './llm/config-helper.js';
+import prompts from 'prompts';
 import { resolve } from 'node:path';
 
 const program = new Command();
@@ -29,9 +31,23 @@ program
   .option('--project <path>', 'operate on specific project config')
   .argument('[key]', 'config key')
   .argument('[value]', 'config value')
-  .action(async (key?: string, value?: string, options?: { global?: boolean; project?: string }) => {
-    if (key && value !== undefined) {
-      await setConfigCommand(key, value, options ?? {});
+  .argument('[extra]', 'config value when using "config set <key> <value>"')
+  .action(async (
+    key?: string,
+    value?: string,
+    extra?: string,
+    options?: { global?: boolean; project?: string },
+  ) => {
+    let realKey = key;
+    let realValue = value;
+
+    if (key === 'set' && value !== undefined && extra !== undefined) {
+      realKey = value;
+      realValue = extra;
+    }
+
+    if (realKey && realValue !== undefined) {
+      await setConfigCommand(realKey, realValue, options ?? {});
     } else {
       await showConfigCommand(options?.project);
     }
@@ -42,7 +58,7 @@ program
   .description('Evaluate a project')
   .argument('<path>', 'project path')
   .option('--rules <paths...>', 'rule pack paths')
-  .option('--llm', 'enable LLM Judge for innovation dimension')
+  .option('--llm', 'enable LLM Judge for innovation, architecture and security dimensions')
   .action(async (projectPath: string, options: { rules?: string[]; llm?: boolean }) => {
     const absolutePath = resolve(projectPath);
     const { project, global } = await resolveConfig(absolutePath);
@@ -51,10 +67,33 @@ program
     const rulePackPaths = options.rules?.map((p) => resolve(p))
       ?? resolveRulePackPaths(config.rulePacks ?? getDefaultRulePackPaths(), absolutePath);
 
+    const enableLlmJudge = options.llm ?? config.enableLlmJudge;
+
+    if (enableLlmJudge && !hasLlmApiKey(config.llm)) {
+      console.log('\n' + formatMissingApiKeyMessage());
+      console.log('\n是否现在输入 API Key 并保存到全局配置？');
+
+      const { usePrompt } = await prompts({
+        type: 'confirm',
+        name: 'usePrompt',
+        message: '立即输入 API Key？',
+        initial: true,
+      });
+
+      if (usePrompt) {
+        const newLlmConfig = await promptForApiKey();
+        if (newLlmConfig) {
+          config.llm = { ...config.llm, ...newLlmConfig };
+        }
+      } else {
+        process.exit(1);
+      }
+    }
+
     const report = await evaluateProject({
       projectPath: absolutePath,
       rulePackPaths,
-      enableLlmJudge: options.llm ?? config.enableLlmJudge,
+      enableLlmJudge,
       llmConfig: config.llm,
     });
     console.log(JSON.stringify(report, null, 2));

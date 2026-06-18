@@ -58,8 +58,13 @@ async function setLlmConfig(
     await saveGlobalConfig(config);
     console.log(`全局 LLM 配置已更新：${llmKey} = ${value}`);
   } else {
-    console.log('LLM API Key 建议配置在全局配置中，避免泄露到项目仓库。');
-    console.log('请使用：csi config set llm.apiKey <your-key> --global');
+    const projectPath = options.project ?? process.cwd();
+    const config = await loadProjectConfig(projectPath);
+    config.llm = config.llm ?? ({} as LlmConfig);
+    setNestedValue(castToRecord(config.llm), llmKey, parseValue(value));
+    await saveProjectConfig(projectPath, config);
+    console.log(`项目 LLM 配置已更新：${llmKey} = ${value}`);
+    console.log('⚠️  警告：LLM API Key 配置在项目文件中可能随仓库泄露，建议使用 --global 配置到全局。');
   }
 }
 

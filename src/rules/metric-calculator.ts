@@ -61,5 +61,42 @@ export function calculateMetrics(files: SourceFile[], rule: RuleDefinition): { i
     return { issues, metrics: [] };
   }
 
+  if (rule.id === 'function-length') {
+    const issues: Issue[] = [];
+    const threshold = rule.check.threshold ?? 50;
+    for (const file of files) {
+      if (!file.relativePath.endsWith('.ts') && !file.relativePath.endsWith('.tsx')) continue;
+      const functionMatches = file.content.match(/(?:function\s+\w+|\)\s*=>)\s*[^{]*\{/g) ?? [];
+      for (const match of functionMatches) {
+        const startIndex = file.content.indexOf(match);
+        if (startIndex === -1) continue;
+        const openBraceIndex = startIndex + match.length - 1;
+        let braceCount = 1;
+        let endIndex = openBraceIndex;
+        for (let i = openBraceIndex + 1; i < file.content.length; i++) {
+          if (file.content[i] === '{') braceCount++;
+          if (file.content[i] === '}') braceCount--;
+          if (braceCount === 0) {
+            endIndex = i;
+            break;
+          }
+        }
+        const body = file.content.slice(startIndex, endIndex + 1);
+        const lines = body.split('\n').length;
+        if (lines > threshold) {
+          const lineNumber = file.content.slice(0, startIndex).split('\n').length;
+          issues.push({
+            file: file.relativePath,
+            rule: rule.id,
+            line: lineNumber,
+            severity: rule.severity,
+            message: `函数约 ${lines} 行，超过 ${threshold} 行限制`,
+          });
+        }
+      }
+    }
+    return { issues, metrics: [] };
+  }
+
   return { issues: [], metrics: [] };
 }
