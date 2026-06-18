@@ -1,7 +1,11 @@
 import { readFile, writeFile, access, mkdir } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
 import { homedir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 import type { CodeSpecConfig } from './types.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const PROJECT_CONFIG_NAME = '.code-spec.json';
 const GLOBAL_CONFIG_DIR = join(homedir(), '.code-spec');
@@ -47,10 +51,7 @@ export async function resolveConfig(projectPath: string): Promise<{ project: Cod
 export function mergeConfig(project: CodeSpecConfig, global: CodeSpecConfig): CodeSpecConfig {
   return {
     techStack: project.techStack ?? global.techStack ?? [],
-    rulePacks: project.rulePacks ?? global.rulePacks ?? [
-      resolve(process.cwd(), 'rule-packs/common'),
-      resolve(process.cwd(), 'rule-packs/typescript'),
-    ],
+    rulePacks: project.rulePacks ?? global.rulePacks ?? getDefaultRulePackPaths(),
     enableLlmJudge: project.enableLlmJudge ?? global.enableLlmJudge ?? false,
     llm: project.llm ?? global.llm,
     output: {
@@ -62,8 +63,8 @@ export function mergeConfig(project: CodeSpecConfig, global: CodeSpecConfig): Co
 
 export function getDefaultRulePackPaths(): string[] {
   return [
-    resolve(process.cwd(), 'rule-packs/common'),
-    resolve(process.cwd(), 'rule-packs/typescript'),
+    resolve(__dirname, '..', '..', 'rule-packs', 'common'),
+    resolve(__dirname, '..', '..', 'rule-packs', 'typescript'),
   ];
 }
 

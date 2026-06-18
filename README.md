@@ -279,6 +279,35 @@ npx tsx src/cli.ts mcp
 
 ---
 
+## Web Dashboard
+
+本地运行的 Web 仪表盘，支持项目评分、历史记录对比和问题查看。
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+浏览器访问 http://localhost:8080，后端 API 在 http://localhost:3000。
+
+### 功能
+
+- 输入本地项目路径，一键跑分
+- 可选启用 LLM Judge
+- 历史记录自动保存到 `~/.code-spec/web/history.json`
+- 选择任意两次记录进行维度对比
+
+生产构建：
+
+```bash
+cd web
+npm run build
+npm start
+```
+
+---
+
 ## 接入国内模型厂商
 
 全部 10 家厂商已内置 preset，无需手动填写 Base URL。
@@ -616,9 +645,9 @@ npm test -- --watch
 | M2 LLM Judge | 创新/架构/安全维度、consensus 共识、Zod 校验 | ✅ |
 | M3 写前规范注入器 | 技术栈检测、Prompt 生成、多平台导出 | ✅ |
 | M4 MCP Server | 3 个 tools 暴露、clients 配置 | ✅ |
-| M5 IDE 插件 | VS Code / JetBrains 插件封装 | 🔲 |
+| M5 IDE 插件 | VS Code / JetBrains 插件封装 | ✅ |
 | M6 Web 应用 | 在线评分、历史对比、团队看板 | 🔲 |
-| M7 多语言规则包 | Python、Java、Go、Rust 规则包 | 🔲 |
+| M7 多语言规则包 | Python、Java、Go、Rust 规则包 | ✅ |
 
 ---
 

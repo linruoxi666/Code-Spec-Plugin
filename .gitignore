@@ -3,3 +3,10 @@ dist/
 *.log
 .DS_Store
 .env
+
+# Generated artifacts
+src/types/*.js
+src/report/*.js
+report.html
+tests/fixtures/sample-project/report.html
+.code-spec-web/
