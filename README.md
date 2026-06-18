@@ -1,7 +1,7 @@
 <div align="center">
 
 <br/>
-<img alt="Code Spec Plugin" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=A%20minimalist%2C%20professional%20logo%20for%20a%20code%20quality%20tool.%20A%20clean%20hexagonal%20or%20shield%20shape%20in%20dark%20slate%20and%20teal%20colors%2C%20resembling%20a%20precision%20instrument%2C%20with%20subtle%20circuit-board%20trace%20patterns.%20No%20text.%20Vector%20style%2C%20flat%20design%2C%20dark%20background.&image_size=square" width="120" />
+<img src="logo.png" alt="Code Spec Plugin" width="120" />
 
 # Code Spec Plugin
 
@@ -97,20 +97,18 @@ npx tsx /path/to/Code-Spec-Plugin/src/cli.ts inject . --write
 ### 六维质量评分
 
 ```mermaid
-graph TB
-    subgraph 混合评分引擎
-        A[项目源码] --> B{规则引擎}
-        B --> C[静态分析维度]
-        B --> D[LLM Judge 维度]
-    end
+flowchart LR
+    A[项目源码] --> B{规则引擎}
+    B --> C[静态分析]
+    B --> D[LLM Judge]
 
-    C --> C1["<b>规范</b><br/>命名·结构·类型"]
-    C --> C2["<b>简洁</b><br/>函数长度·复杂度"]
-    C --> C3["<b>注释</b><br/>覆盖率·质量"]
+    C --> C1["规范 -- 命名 · 结构 · 类型"]
+    C --> C2["简洁 -- 函数长度 · 复杂度"]
+    C --> C3["注释 -- 覆盖率 · 质量"]
 
-    D --> D1["<b>创新</b><br/>技术思路·架构创新"]
-    D --> D2["<b>架构</b><br/>模块化·扩展性·可维护性"]
-    D --> D3["<b>安全</b><br/>注入风险·密钥·OWASP"]
+    D --> D1["创新 -- 技术思路 · 架构创新"]
+    D --> D2["架构 -- 模块化 · 扩展性 · 可维护性"]
+    D --> D3["安全 -- 注入风险 · 密钥 · OWASP"]
 ```
 
 | 维度 | 评估方式 | 默认权重 | 评分依据 |
