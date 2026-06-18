@@ -8,6 +8,8 @@ import { resolveConfig, mergeConfig, resolveRulePackPaths, getDefaultRulePackPat
 import { hasLlmApiKey, promptForApiKey, formatMissingApiKeyMessage } from './llm/config-helper.js';
 import prompts from 'prompts';
 import { resolve } from 'node:path';
+import { writeFileSync } from 'node:fs';
+import { renderReportHtml } from './report/html-reporter.js';
 
 const program = new Command();
 
@@ -59,7 +61,8 @@ program
   .argument('<path>', 'project path')
   .option('--rules <paths...>', 'rule pack paths')
   .option('--llm', 'enable LLM Judge for innovation, architecture and security dimensions')
-  .action(async (projectPath: string, options: { rules?: string[]; llm?: boolean }) => {
+  .option('--report <path>', 'write a self-contained HTML report to the given path')
+  .action(async (projectPath: string, options: { rules?: string[]; llm?: boolean; report?: string }) => {
     const absolutePath = resolve(projectPath);
     const { project, global } = await resolveConfig(absolutePath);
     const config = mergeConfig(project, global);
@@ -96,6 +99,13 @@ program
       enableLlmJudge,
       llmConfig: config.llm,
     });
+
+    if (options.report) {
+      const reportPath = resolve(options.report);
+      writeFileSync(reportPath, renderReportHtml(report), 'utf8');
+      console.log(`HTML report written to ${reportPath}`);
+    }
+
     console.log(JSON.stringify(report, null, 2));
   });
 

@@ -1,0 +1,57 @@
+{
+  "name": "code-spec-vscode",
+  "displayName": "Code Spec Plugin",
+  "description": "One-stop code quality evaluator for VS Code",
+  "version": "0.1.0",
+  "publisher": "code-spec",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:codeSpec.evaluateProject",
+    "onCommand:codeSpec.generateReport"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeSpec.evaluateProject",
+        "title": "Evaluate Project",
+        "category": "Code Spec"
+      },
+      {
+        "command": "codeSpec.generateReport",
+        "title": "Generate HTML Report",
+        "category": "Code Spec"
+      }
+    ],
+    "configuration": {
+      "title": "Code Spec",
+      "properties": {
+        "codeSpec.cliPath": {
+          "type": "string",
+          "default": "csi",
+          "description": "Path to the Code Spec CLI (csi). Defaults to global 'csi'."
+        },
+        "codeSpec.enableLlmJudge": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable LLM Judge for innovation, architecture and security dimensions."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -9,6 +9,9 @@ const availableTechStacks = [
   { title: 'React', value: 'react' },
   { title: 'Next.js', value: 'nextjs' },
   { title: 'Node.js', value: 'nodejs' },
+  { title: 'Java', value: 'java' },
+  { title: 'Go', value: 'go' },
+  { title: 'Python', value: 'python' },
   { title: 'Kotlin / Android', value: 'kotlin' },
   { title: 'Rust', value: 'rust' },
 ];
@@ -103,6 +106,15 @@ function buildRulePacks(techStack: string[]): string[] {
   }
   if (techStack.includes('react') || techStack.includes('nextjs')) {
     packs.push('rule-packs/react');
+  }
+  if (techStack.includes('java')) {
+    packs.push('rule-packs/java');
+  }
+  if (techStack.includes('go')) {
+    packs.push('rule-packs/go');
+  }
+  if (techStack.includes('python')) {
+    packs.push('rule-packs/python');
   }
   if (techStack.includes('kotlin')) {
     packs.push('rule-packs/kotlin');
