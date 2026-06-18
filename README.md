@@ -12,11 +12,31 @@
 <div align="center">
 
 [![CI](https://github.com/linruoxi666/Code-Spec-Plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/linruoxi666/Code-Spec-Plugin/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/Tests-44%20passing-success?logo=vitest)](https://github.com/linruoxi666/Code-Spec-Plugin/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-brightgreen)](#)
+[![GitHub stars](https://img.shields.io/github/stars/linruoxi666/Code-Spec-Plugin?logo=github)](https://github.com/linruoxi666/Code-Spec-Plugin)
+
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-green?logo=nodedotjs)](https://nodejs.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)](https://vitejs.dev/)
+[![Express](https://img.shields.io/badge/Express-4-000000?logo=express)](https://expressjs.com/)
+[![JSON Rules](https://img.shields.io/badge/Rules-JSON%20Schema-orange?logo=json)](./rule-packs)
+
 [![MCP](https://img.shields.io/badge/MCP-Compatible-purple)](https://modelcontextprotocol.io/)
+[![VS Code](https://img.shields.io/badge/VS%20Code-Extension-007ACC?logo=visualstudiocode)](./ide/vscode)
+[![JetBrains](https://img.shields.io/badge/JetBrains-Plugin-000000?logo=jetbrains)](./ide/jetbrains)
+[![Web Dashboard](https://img.shields.io/badge/Web%20Dashboard-Local-4FC08D?logo=serverless)](./web)
+
+[![Languages](https://img.shields.io/badge/Languages-TS%20%7C%20JS%20%7C%20Java%20%7C%20Kotlin%20%7C%20Go%20%7C%20Rust%20%7C%20Python-blue)](./rule-packs)
+[![tree-sitter](https://img.shields.io/badge/AST-tree--sitter-059669?logo=tree)](https://tree-sitter.github.io/tree-sitter/)
+[![LLM Judge](https://img.shields.io/badge/LLM%20Judge-10%20Providers-8B5CF6)](./src/llm)
+[![6 Dimensions](https://img.shields.io/badge/Scoring-6%20Dimensions-0EA5E9)](##-%E5%85%AD%E7%BB%B4%E8%B4%A8%E9%87%8F%E8%AF%84%E5%88%86)
+
 [![everything-claude-code](https://img.shields.io/badge/Inspired%20by-everything--claude--code-orange)](https://github.com/affaan-m/everything-claude-code)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#%E8%B4%A1%E7%8C%AE)
+[![Made with AI](https://img.shields.io/badge/Made%20with-Claude%20Code-FF6B6B?logo=anthropic)](https://claude.ai/code)
 
 </div>
 
@@ -394,12 +414,17 @@ export LLM_VERIFY_SSL=false
 ├─────────────────────────────────────────────────────────────────┤
 │                   规则包层 (Rule Packs)                           │
 │                                                                 │
-│  ┌───────────┐  ┌──────────────┐  ┌──────────┐  ┌───────────┐ │
-│  │  common   │  │  typescript  │  │  react   │  │  python   │ │
-│  │ ·密钥检测 │  │  ·命名规范   │  │ ·组件命名│  │ (计划中)  │ │
-│  │ ·函数长度 │  │  ·注释覆盖率 │  │ ·组件长度│  │           │ │
-│  │ ·README   │  │  ·文件长度   │  │          │  │           │ │
-│  └───────────┘  └──────────────┘  └──────────┘  └───────────┘ │
+│  ┌───────────┐  ┌──────────────┐  ┌──────────┐  ┌───────────┐  ┌───────────┐ │
+│  │  common   │  │  typescript  │  │  react   │  │   java    │  │    go     │ │
+│  │ ·密钥检测 │  │  ·命名规范   │  │ ·组件命名│  │ ·类/方法  │  │ ·函数/类型│ │
+│  │ ·函数长度 │  │  ·注释覆盖率 │  │ ·组件长度│  │ ·注释率   │  │ ·注释率   │ │
+│  │ ·README   │  │  ·文件长度   │  │          │  │           │  │           │ │
+│  └───────────┘  └──────────────┘  └──────────┘  └───────────┘  └───────────┘ │
+│  ┌───────────┐  ┌──────────────┐  ┌──────────┐  ┌───────────┐               │
+│  │   rust    │  │    python    │  │  kotlin  │  │    js     │               │
+│  │ ·函数/结构│  │ ·函数/类命名 │  │ ·类/函数  │  │ 通用规则  │               │
+│  │ ·注释率   │  │ ·注释率     │  │ ·注释率   │  │           │               │
+│  └───────────┘  └──────────────┘  └──────────┘  └───────────┘               │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -572,8 +597,13 @@ Code-Spec-Plugin/
 ├── rule-packs/
 │   ├── common/                 # 3 条通用规则
 │   ├── typescript/             # 3 条 TS 规则
-│   └── react/                  # 2 条 React 规则
-├── tests/                      # Vitest 测试 (12 文件 / 21 用例)
+│   ├── react/                  # 2 条 React 规则
+│   ├── java/                   # 5 条 Java 规则
+│   ├── go/                     # 4 条 Go 规则
+│   ├── rust/                   # 4 条 Rust 规则
+│   ├── python/                 # 4 条 Python 规则
+│   └── kotlin/                 # 4 条 Kotlin 规则
+├── tests/                      # Vitest 测试 (12 文件 / 44 用例)
 ├── docs/
 │   ├── superpowers/specs/      # 设计文档
 │   ├── superpowers/plans/      # 各模块实施计划
@@ -616,8 +646,9 @@ npm test -- --watch
 ✓ tests/llm/judge.test.ts              (1 test)
 ✓ tests/llm/consensus.test.ts           (1 test)
 ✓ tests/llm/client.test.ts             (3 tests)
+✓ tests/mcp/server.test.ts             (1 test)
 ────────────────────────────────────────
-  Total: 12 files / 21 tests, all passing
+  Total: 12 files / 44 tests, all passing
 ```
 
 ---
@@ -657,8 +688,8 @@ npm test -- --watch
 | M3 写前规范注入器 | 技术栈检测、Prompt 生成、多平台导出 | ✅ |
 | M4 MCP Server | 3 个 tools 暴露、clients 配置 | ✅ |
 | M5 IDE 插件 | VS Code / JetBrains 插件封装 | ✅ |
-| M6 Web 应用 | 在线评分、历史对比、团队看板 | 🔲 |
-| M7 多语言规则包 | Python、Java、Go、Rust 规则包 | ✅ |
+| M6 Web 应用 | 本地评分、历史对比、详细报告、深浅主题 | ✅ |
+| M7 多语言规则包 | TypeScript / JS / Java / Kotlin / Go / Rust / Python | ✅ |
 
 ---
 
