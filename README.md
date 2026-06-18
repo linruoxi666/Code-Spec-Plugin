@@ -44,6 +44,17 @@
          ──► 深度审计 (audit)     逐文件问题清单 + 重构建议
 ```
 
+### 功能矩阵
+
+| 能力 | CLI | MCP | VS Code | JetBrains | Web |
+|------|:---:|:---:|:-------:|:---------:|:---:|
+| 六维评分 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| LLM Judge | ✅ | ✅ | — | — | ✅ |
+| 历史记录 | — | — | — | — | ✅ |
+| 详细 HTML 报告 | ✅ | — | ✅ | — | ✅ |
+| 写前规范注入 | ✅ | ✅ | — | — | — |
+| 多语言规则包 | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 ---
 
 ## <img src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/TypeScript.svg" width="24"/> 5分钟快速开始
