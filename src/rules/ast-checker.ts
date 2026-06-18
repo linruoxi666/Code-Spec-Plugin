@@ -33,6 +33,26 @@ export function checkAst(files: SourceFile[], rule: RuleDefinition): Issue[] {
         }
       }
     }
+
+    if (rule.id === 'react-component-naming') {
+      if (!file.relativePath.endsWith('.tsx')) continue;
+      const functions = root.descendantsOfType('function_declaration');
+      for (const fn of functions) {
+        const nameNode = fn.childForFieldName('name');
+        if (!nameNode) continue;
+        const name = nameNode.text;
+        if (!/^[A-Z][a-zA-Z0-9]*$/.test(name)) {
+          issues.push({
+            file: file.relativePath,
+            line: nameNode.startPosition.row + 1,
+            column: nameNode.startPosition.column + 1,
+            rule: rule.id,
+            severity: rule.severity,
+            message: `${rule.check.message}: ${name}`,
+          });
+        }
+      }
+    }
   }
   return issues;
 }

@@ -33,7 +33,8 @@ export async function evaluateProject(options: EvaluateOptions): Promise<Evaluat
         throw new Error('LLM API key is missing');
       }
       const client = createLlmClient(config);
-      const innovation = await judgeInnovationWithConsensus(client, config.model, files);
+      const model = config.model ?? 'gpt-4o-mini';
+      const innovation = await judgeInnovationWithConsensus(client, model, files);
 
       const innovationDimension = dimensions.find((d) => d.dimension === '创新');
       if (innovationDimension) {

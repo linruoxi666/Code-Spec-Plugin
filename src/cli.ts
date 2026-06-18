@@ -2,14 +2,40 @@
 import { Command } from 'commander';
 import { evaluateProject } from './core/rule-engine.js';
 import { generateGuidelines } from './guidelines/injector.js';
+import { initCommand } from './commands/init.js';
+import { showConfigCommand, setConfigCommand } from './commands/config.js';
+import { resolveConfig, mergeConfig, resolveRulePackPaths, getDefaultRulePackPaths } from './config/manager.js';
 import { resolve } from 'node:path';
 
 const program = new Command();
 
 program
   .name('csi')
-  .description('Code Spec Interview Plugin CLI')
+  .description('Code Spec Plugin CLI')
   .version('0.1.0');
+
+program
+  .command('init')
+  .description('Initialize project configuration interactively')
+  .argument('[path]', 'project path', '.')
+  .action(async (projectPath: string) => {
+    await initCommand(projectPath);
+  });
+
+program
+  .command('config')
+  .description('Show or set configuration')
+  .option('--global', 'operate on global config')
+  .option('--project <path>', 'operate on specific project config')
+  .argument('[key]', 'config key')
+  .argument('[value]', 'config value')
+  .action(async (key?: string, value?: string, options?: { global?: boolean; project?: string }) => {
+    if (key && value !== undefined) {
+      await setConfigCommand(key, value, options ?? {});
+    } else {
+      await showConfigCommand(options?.project);
+    }
+  });
 
 program
   .command('evaluate')
@@ -19,15 +45,17 @@ program
   .option('--llm', 'enable LLM Judge for innovation dimension')
   .action(async (projectPath: string, options: { rules?: string[]; llm?: boolean }) => {
     const absolutePath = resolve(projectPath);
-    const rulePackPaths = options.rules?.map((p) => resolve(p)) ?? [
-      resolve(process.cwd(), 'rule-packs/common'),
-      resolve(process.cwd(), 'rule-packs/typescript'),
-    ];
+    const { project, global } = await resolveConfig(absolutePath);
+    const config = mergeConfig(project, global);
+
+    const rulePackPaths = options.rules?.map((p) => resolve(p))
+      ?? resolveRulePackPaths(config.rulePacks ?? getDefaultRulePackPaths(), absolutePath);
 
     const report = await evaluateProject({
       projectPath: absolutePath,
       rulePackPaths,
-      enableLlmJudge: options.llm,
+      enableLlmJudge: options.llm ?? config.enableLlmJudge,
+      llmConfig: config.llm,
     });
     console.log(JSON.stringify(report, null, 2));
   });
@@ -40,10 +68,11 @@ program
   .option('--write', 'write guideline files to project')
   .action(async (projectPath: string, options: { rules?: string[]; write?: boolean }) => {
     const absolutePath = resolve(projectPath);
-    const rulePackPaths = options.rules?.map((p) => resolve(p)) ?? [
-      resolve(process.cwd(), 'rule-packs/common'),
-      resolve(process.cwd(), 'rule-packs/typescript'),
-    ];
+    const { project, global } = await resolveConfig(absolutePath);
+    const config = mergeConfig(project, global);
+
+    const rulePackPaths = options.rules?.map((p) => resolve(p))
+      ?? resolveRulePackPaths(config.rulePacks ?? getDefaultRulePackPaths(), absolutePath);
 
     const result = await generateGuidelines({
       projectPath: absolutePath,

@@ -1,0 +1,11 @@
+{
+  "id": "react-component-length",
+  "dimension": "简洁",
+  "weight": 0.08,
+  "severity": "warning",
+  "check": {
+    "type": "metric",
+    "message": "React 组件文件过长",
+    "threshold": 250
+  }
+}

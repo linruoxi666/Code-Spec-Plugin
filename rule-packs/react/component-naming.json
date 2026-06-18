@@ -1,0 +1,11 @@
+{
+  "id": "react-component-naming",
+  "dimension": "规范",
+  "weight": 0.1,
+  "severity": "error",
+  "check": {
+    "type": "ast-query",
+    "pattern": "function_declaration[name !~ /^[A-Z][a-zA-Z0-9]*$/]",
+    "message": "React 组件名应使用 PascalCase"
+  }
+}

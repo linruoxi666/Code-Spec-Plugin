@@ -58,8 +58,8 @@ export interface EvaluateOptions {
   enableLlmJudge?: boolean;
   llmConfig?: {
     baseURL?: string;
-    apiKey: string;
-    model: string;
+    apiKey?: string;
+    model?: string;
   };
 }
 

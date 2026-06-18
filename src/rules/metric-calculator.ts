@@ -43,5 +43,23 @@ export function calculateMetrics(files: SourceFile[], rule: RuleDefinition): { i
     return { issues, metrics: [] };
   }
 
+  if (rule.id === 'react-component-length') {
+    const issues: Issue[] = [];
+    const threshold = rule.check.threshold ?? 250;
+    for (const file of files) {
+      if (!file.relativePath.endsWith('.tsx')) continue;
+      const lines = file.content.split('\n').length;
+      if (lines > threshold) {
+        issues.push({
+          file: file.relativePath,
+          rule: rule.id,
+          severity: rule.severity,
+          message: `React 组件文件 ${lines} 行，超过 ${threshold} 行限制`,
+        });
+      }
+    }
+    return { issues, metrics: [] };
+  }
+
   return { issues: [], metrics: [] };
 }
