@@ -1,0 +1,10 @@
+{
+  "id": "readme-required",
+  "dimension": "规范",
+  "weight": 0.05,
+  "severity": "error",
+  "check": {
+    "type": "metric",
+    "message": "项目缺少 README.md"
+  }
+}

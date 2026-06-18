@@ -1,0 +1,10 @@
+{
+  "id": "naming-convention",
+  "dimension": "规范",
+  "weight": 0.15,
+  "severity": "error",
+  "check": {
+    "type": "ast-query",
+    "message": "函数名应使用 camelCase"
+  }
+}

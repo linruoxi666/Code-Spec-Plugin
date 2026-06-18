@@ -1,0 +1,11 @@
+{
+  "id": "file-length",
+  "dimension": "简洁",
+  "weight": 0.1,
+  "severity": "warning",
+  "check": {
+    "type": "metric",
+    "message": "文件过长",
+    "threshold": 300
+  }
+}
