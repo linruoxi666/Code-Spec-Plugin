@@ -1,0 +1,11 @@
+{
+  "id": "kdoc-coverage",
+  "dimension": "注释",
+  "weight": 0.1,
+  "severity": "warning",
+  "check": {
+    "type": "metric",
+    "message": "KDoc 覆盖率不足",
+    "threshold": 0.1
+  }
+}

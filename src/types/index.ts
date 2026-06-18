@@ -9,6 +9,7 @@ export interface Issue {
   rule: string;
   severity: Severity;
   message: string;
+  dimension?: Dimension;
 }
 
 export interface MetricValue {

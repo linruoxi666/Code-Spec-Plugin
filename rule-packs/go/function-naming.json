@@ -1,0 +1,10 @@
+{
+  "id": "go-function-naming",
+  "dimension": "规范",
+  "weight": 0.1,
+  "severity": "error",
+  "check": {
+    "type": "ast-query",
+    "message": "Go 函数名应使用 camelCase"
+  }
+}

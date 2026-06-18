@@ -16,6 +16,9 @@ export async function detectTechStack(projectPath: string, files: SourceFile[]):
   if (files.some((f) => f.relativePath.endsWith('.js') || f.relativePath.endsWith('.jsx'))) languages.push('JavaScript');
   if (files.some((f) => f.relativePath.endsWith('.kt'))) languages.push('Kotlin');
   if (files.some((f) => f.relativePath.endsWith('.rs'))) languages.push('Rust');
+  if (files.some((f) => f.relativePath.endsWith('.java'))) languages.push('Java');
+  if (files.some((f) => f.relativePath.endsWith('.go'))) languages.push('Go');
+  if (files.some((f) => f.relativePath.endsWith('.py'))) languages.push('Python');
 
   const frameworks: string[] = [];
   const packageJsonPath = join(projectPath, 'package.json');

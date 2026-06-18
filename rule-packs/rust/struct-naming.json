@@ -1,0 +1,10 @@
+{
+  "id": "rust-struct-naming",
+  "dimension": "规范",
+  "weight": 0.1,
+  "severity": "error",
+  "check": {
+    "type": "ast-query",
+    "message": "Rust 结构体名应使用 PascalCase"
+  }
+}

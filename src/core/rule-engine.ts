@@ -23,7 +23,7 @@ export async function evaluateProject(options: EvaluateOptions): Promise<Evaluat
   for (const pack of rulePacks) {
     for (const rule of pack.rules) {
       const result = await executeRule(files, rule);
-      allIssues.push(...result.issues);
+      allIssues.push(...result.issues.map((issue) => ({ ...issue, dimension: rule.dimension })));
       allMetrics.push(...result.metrics);
     }
   }

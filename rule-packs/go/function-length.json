@@ -1,0 +1,11 @@
+{
+  "id": "function-length",
+  "dimension": "简洁",
+  "weight": 0.1,
+  "severity": "warning",
+  "check": {
+    "type": "metric",
+    "message": "Go 函数过长",
+    "threshold": 50
+  }
+}

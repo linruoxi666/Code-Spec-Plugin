@@ -1,0 +1,10 @@
+{
+  "id": "java-method-naming",
+  "dimension": "规范",
+  "weight": 0.1,
+  "severity": "error",
+  "check": {
+    "type": "ast-query",
+    "message": "Java 方法名应使用 camelCase"
+  }
+}

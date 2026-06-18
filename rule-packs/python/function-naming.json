@@ -1,0 +1,10 @@
+{
+  "id": "python-function-naming",
+  "dimension": "规范",
+  "weight": 0.1,
+  "severity": "error",
+  "check": {
+    "type": "ast-query",
+    "message": "Python 函数名应使用 snake_case"
+  }
+}
