@@ -35,7 +35,7 @@
 
 传统的 AI 辅助编程是"写了再说"——生成了不规范代码再去修，低效且不可控。大厂面试官看项目时往往在几秒内就能通过代码结构判断水平。
 
-**Code Spec Plugin** 把"评判标准"前置：在编码前注入规范、编码后量化评分、发现问题即刻修复。一套引擎同时支持 CLI、MCP Server、IDE 插件和 Web 应用。
+**Code Spec Plugin** 把"评判标准"前置：在编码前注入规范、编码后量化评分、发现问题即刻修复。一套引擎同时支持 **CLI、MCP Server、VS Code / JetBrains 插件和本地 Web 仪表盘**。
 
 ```
 编码前 ──► 规范注入 (inject)     生成 .trae/rules、.cursorrules、copilot-instructions
